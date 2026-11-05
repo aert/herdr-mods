@@ -32,31 +32,31 @@ a different program from the `herdr-app` desktop app this file is about.
 Both are third-party mods, listed in the [herdr.dev gallery](https://herdr.dev/mods/),
 and neither is pinned here.
 
-## Optional: Redline
+## Optional: Reviewer, in the Changes slot
 
-[iampedii/herdr-redline](https://github.com/iampedii/herdr-redline) · code review
-for GitLab merge requests and GitHub pull requests: a panel of open requests
-(pipeline, threads, merge), and a review tab with an agent beside a diff pane in
-its own git worktree. Independent of the Files stack. Needs `git` and `glab`
-and/or `gh` logged in.
+[vytasgavelis/herdr-reviewer](https://github.com/vytasgavelis/herdr-reviewer) · MIT.
+Replaces the Changes panel's diff with a pull-request-style review of the working
+tree: syntax-coloured diffs, three scopes (uncommitted, last commit, vs main),
+inline comments on lines, hunks or files, and *Submit review* sends them all to
+the agent in the space. It keeps the file list and commit box. Independent of the
+Files stack: it takes the `changes` child of `panel-body`, not `files`. Default
+branch is `master`.
 
 ```sh
 w2=$(mktemp -d)
-curl -fsSL https://github.com/iampedii/herdr-redline/archive/refs/heads/main.tar.gz | tar xz -C "$w2"
-cp -R "$w2/herdr-redline-main/mods/redline" "$app/mods/"
-herdr-app check "$app/mods/redline"   # expect: check passed
+curl -fsSL https://github.com/vytasgavelis/herdr-reviewer/archive/refs/heads/master.tar.gz | tar xz -C "$w2"
+sh "$w2/herdr-reviewer-master/scripts/install.sh"   # copies to $app/mods/reviewer and checks it
 ```
 
-Then add to the `"global"` section of `$app/keys.json` (skip any key already taken):
+Then, in each layout you use (not Herdr's read-only `main`; clone it first), point
+the `"id": "changes"` block at it:
 
 ```json
-"cmd-shift-f": "mod.open:redline",
-"ctrl-shift-f": "mod.open:redline"
+{ "id": "changes", "type": "block", "content": { "mod": "reviewer" } }
 ```
 
-Focus a terminal inside a repository and press ⌘⇧F. Upstream says merge, draft
-toggle, label/assignee/reviewer edits and job retry/cancel are untested against
-real requests — try them on a throwaway one first.
+No keys are bound by default (`reviewer.submit`, `reviewer.ask`, `reviewer.clear`,
+`reviewer.scope` can be bound in `keys.json`).
 
 ```sh
 set -eu
