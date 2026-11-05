@@ -32,6 +32,32 @@ a different program from the `herdr-app` desktop app this file is about.
 Both are third-party mods, listed in the [herdr.dev gallery](https://herdr.dev/mods/),
 and neither is pinned here.
 
+## Optional: Redline
+
+[iampedii/herdr-redline](https://github.com/iampedii/herdr-redline) · code review
+for GitLab merge requests and GitHub pull requests: a panel of open requests
+(pipeline, threads, merge), and a review tab with an agent beside a diff pane in
+its own git worktree. Independent of the Files stack. Needs `git` and `glab`
+and/or `gh` logged in.
+
+```sh
+w2=$(mktemp -d)
+curl -fsSL https://github.com/iampedii/herdr-redline/archive/refs/heads/main.tar.gz | tar xz -C "$w2"
+cp -R "$w2/herdr-redline-main/mods/redline" "$app/mods/"
+herdr-app check "$app/mods/redline"   # expect: check passed
+```
+
+Then add to the `"global"` section of `$app/keys.json` (skip any key already taken):
+
+```json
+"cmd-shift-f": "mod.open:redline",
+"ctrl-shift-f": "mod.open:redline"
+```
+
+Focus a terminal inside a repository and press ⌘⇧F. Upstream says merge, draft
+toggle, label/assignee/reviewer edits and job retry/cancel are untested against
+real requests — try them on a throwaway one first.
+
 ```sh
 set -eu
 app=${HERDR_APP_HOME:-$HOME/.config/herdr-app}
