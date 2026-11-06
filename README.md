@@ -32,31 +32,31 @@ a different program from the `herdr-app` desktop app this file is about.
 Both are third-party mods, listed in the [herdr.dev gallery](https://herdr.dev/mods/),
 and neither is pinned here.
 
-## Optional: Reviewer, in the Changes slot
+## Optional: Git Changes, in the Changes slot
 
-[vytasgavelis/herdr-reviewer](https://github.com/vytasgavelis/herdr-reviewer) · MIT.
-Replaces the Changes panel's diff with a pull-request-style review of the working
-tree: syntax-coloured diffs, three scopes (uncommitted, last commit, vs main),
-inline comments on lines, hunks or files, and *Submit review* sends them all to
-the agent in the space. It keeps the file list and commit box. Independent of the
-Files stack: it takes the `changes` child of `panel-body`, not `files`. Default
-branch is `master`.
+[aBER0724/herdr-git-changes](https://github.com/aBER0724/herdr-git-changes) · MIT.
+A Zed-style git panel to replace Herdr's read-only `changes`: stage with
+checkboxes, commit/amend/stash/pull/push, a History commit graph, diffs in the
+main area, and a right-click file menu with **Copy path** / **Copy full path**.
+Independent of the Files stack: it takes the `changes` child of `panel-body`, not
+`files`. Needs git 2.35+; upstream tested Herdr 0.1.11 on macOS.
 
 ```sh
 w2=$(mktemp -d)
-curl -fsSL https://github.com/vytasgavelis/herdr-reviewer/archive/refs/heads/master.tar.gz | tar xz -C "$w2"
-sh "$w2/herdr-reviewer-master/scripts/install.sh"   # copies to $app/mods/reviewer and checks it
+curl -fsSL https://github.com/aBER0724/herdr-git-changes/archive/refs/heads/main.tar.gz | tar xz -C "$w2"
+cp -R "$w2/herdr-git-changes-main/mods/git-changes" "$app/mods/"
+herdr-app check "$app/mods/git-changes"   # expect: check passed
 ```
 
-Then, in each layout you use (not Herdr's read-only `main`; clone it first), point
-the `"id": "changes"` block at it:
+Installing swaps nothing by itself. In each layout you use (not Herdr's read-only
+`main`; clone it first), point the `"id": "changes"` block at it:
 
 ```json
-{ "id": "changes", "type": "block", "content": { "mod": "reviewer" } }
+{ "id": "changes", "type": "block", "content": { "mod": "git-changes" } }
 ```
 
-No keys are bound by default (`reviewer.submit`, `reviewer.ask`, `reviewer.clear`,
-`reviewer.scope` can be bound in `keys.json`).
+`grep -l '"mod": *"changes"' "$app"/layouts/*.json` lists layouts still on Herdr's
+panel.
 
 ```sh
 set -eu
